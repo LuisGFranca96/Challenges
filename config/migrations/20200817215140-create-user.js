@@ -45,10 +45,6 @@ module.exports = {
         type: Sequelize.TEXT,
         allowNull: true
       },
-      isWhatsapp: {
-        type: Sequelize.BOOLEAN,
-        allowNull: false
-      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

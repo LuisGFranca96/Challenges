@@ -1,5 +1,5 @@
 import express from 'express';
-import validate from 'express-validation';
+import { validate, Joi } from 'express-validation';
 import paramValidation from '../../config/param-validation';
 import userCtrl from '../controllers/user.controller';
 import expressJwt from "express-jwt";
@@ -37,7 +37,11 @@ router.route('/')
     )
 
     /** POST /api/users - Create new user */
-    .post(validate(paramValidation.createUser), userCtrl.create);
+    .post(validate(paramValidation.createUser, {
+      context: false,
+      keyByField: true,
+      statusCode: 400
+    }, {}), userCtrl.create);
 
 router.route('/:userId')
 
@@ -49,7 +53,11 @@ router.route('/:userId')
     /** PUT /api/users/:userId - Update user */
     .put(expressJwt({
         secret: config.jwtSecret,
-        }), validate(paramValidation.updateUser), userCtrl.update);
+        }), validate(paramValidation.updateUser, {
+          context: false,
+          keyByField: true,
+          statusCode: 400
+        }, {}), userCtrl.update);
 
 router.route('/upload/:userId')
     .post(
@@ -62,11 +70,19 @@ router.route('/change-password/:userId')
     .put(expressJwt({
         secret: config.jwtSecret,
         }),
-        validate(paramValidation.changePassword),
+        validate(paramValidation.changePassword, {
+          context: false,
+          keyByField: true,
+          statusCode: 400
+        }, {}),
         userCtrl.changePassword)
 
 router.route('/confirm-account/:key')
-    .put(validate(paramValidation.confirmAccount), (userCtrl.confirmAccount))
+    .put(validate(paramValidation.confirmAccount, {
+      context: false,
+      keyByField: true,
+      statusCode: 400
+    }, {}), (userCtrl.confirmAccount))
 
 /** Load user when API with userId route parameter is hit */
 router.param('userId', userCtrl.load);
